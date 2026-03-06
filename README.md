@@ -1,49 +1,53 @@
 # 🏠 Ames Housing Project — Phase 1: Data Cleaning
-
-## 1️⃣ Phase 1: Data Cleaning
-In this phase, we focused on **loading the data, exploring it, and cleaning it** before any analysis or modeling.  
-Goal: have a **clean DataFrame** with no missing values, duplicates, or crazy outliers.
+**Student Name | ML Foundations Capstone Report**
 
 ---
 
-## 2️⃣ What We Did
+## 1️⃣ Introduction
+For this phase, I worked with the **Ames Housing dataset**, which contains 2,930 residential property sales in Ames, Iowa. Each record has over 80 features describing the house’s lot, structure, condition, and neighborhood, along with the final sale price.  
 
-### 1. Load & Explore
-- Used `pd.read_csv()` to load the dataset.  
-- Checked the first 5 rows with `.head()` to understand the data.  
-- Checked **shape (`.shape`) and data types (`.info()`)** to make sure everything looks right.  
-- Fixed some column types like `MS SubClass`, `Mo Sold`, and `Yr Sold` from int to str.
+The main goal of Phase 1 was to **load the data, understand it, and clean it**, so that the dataset would be ready for analysis and modeling in later phases.
 
-### 2. Handling Missing Values
-- Dropped columns with more than 80% missing (`Pool QC`, `Misc Feature`, `Alley`, `Fence`).  
-- For categorical columns where NaN means the feature doesn’t exist, filled with `"None"` (like `Mas Vnr Type`, `Fireplace Qu`, `Bsmt Qual`, `Garage Type`).  
-- For skewed numeric columns, filled missing values with **Median**.  
-- For numeric count columns where NaN means the feature doesn’t exist, filled with **0**.  
-- Filled `Electrical` with **Mode** since it had only one missing value.
+---
 
-### 3. Remove Duplicates
-- Checked for duplicated rows using `.duplicated()`.  
-- Dropped any duplicates if found.
+## 2️⃣ Cleaning Summary
 
-### 4. Handle Outliers
+### a) Missing Values
+- Dropped columns with **more than 80% missing values**: `Pool QC`, `Misc Feature`, `Alley`, `Fence`. Imputing these would be unreliable.  
+- Filled categorical columns where NaN means the feature doesn’t exist (e.g., `Mas Vnr Type`, `Fireplace Qu`, `Garage Type`) with `"None"`.  
+- Filled numeric columns with extreme outliers (skewed) with **median** (`Lot Frontage`, `Garage Yr Blt`, `BsmtFin SF 1`, `Garage Cars`, etc.).  
+- Filled numeric count columns where NaN indicates absence (`Bsmt Full Bath`, `Mas Vnr Area`) with **0**.  
+- Filled the single missing value in `Electrical` with **mode**.  
+
+### b) Data Types
+- Converted columns that are **categorical but stored as integers** to strings: `MS SubClass`, `Mo Sold`, `Yr Sold`.  
+
+### c) Outliers
 - Detected outliers in `SalePrice` using the IQR method.  
-- Capped extreme values at the **99th percentile**.  
-- After capping, no outliers remained.
+- Capped extreme values at the **99th percentile**. This prevents the most expensive houses from distorting analysis without removing real sales.  
 
-### 5. Validation
-- Checked that no key columns have missing values.  
-- All `SalePrice` values are > 0 ✅  
-- DataFrame is not empty.
+### d) Duplicates
+- Checked for full-row duplicates using `.duplicated()`.  
+- Removed any duplicates (none were found in this dataset).
+
+### e) Validation
+- Ensured no missing values remain in key columns.  
+- Confirmed all `SalePrice` values are **greater than 0**.  
+- Verified the DataFrame is not empty.  
+
+All of these steps are included in a **`clean_data()` function**, which can be reused for other datasets or future phases.  
 
 ---
 
-## 3️⃣ Result
-- Dataset is now **clean** and ready for **Feature Engineering** or any modeling.  
-- All steps are included in the `clean_data()` function so we can reuse it easily.  
+## 3️⃣ Dataset After Cleaning
+- **Rows:** 2,930  
+- **Columns:** Reduced from 82 to cleaned set (some dropped for missing values)  
+- **Target:** `SalePrice` is clean, with outliers capped and no missing values.  
 
-> 🌟 Summary:  
-> - Dropped columns with >80% missing  
-> - Filled missing values smartly based on column type  
-> - Removed duplicates  
-> - Capped outliers  
-> - Dataset ready for next steps!
+> Summary:  
+> - Columns with >80% missing dropped  
+> - Missing values filled smartly (median, zero, mode, or `"None"`)  
+> - Data types fixed for categorical features  
+> - Outliers capped at 99th percentile  
+> - No duplicates  
+> - Dataset ready for analysis
